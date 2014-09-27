@@ -153,8 +153,8 @@ class Domain(object):
           cert_file: The file name of the cert
 
         Raises:
-          errors.LDAPConnectionFailedError: if no ldap connection can be made
-          errors.InvalidCredentialsError: if the ldap credentials are not accepted
+          errors.LDAPConnectionFailed: if no ldap connection can be made
+          errors.InvalidCredentials: if the ldap credentials are not accepted
         """
 
         if self._connected:
@@ -177,9 +177,9 @@ class Domain(object):
             self._connected = True
             self.get_root_dse_attrs()
         except ldap.SERVER_DOWN, e:
-            raise errors.LDAPConnectionFailedError(e.args[0]['info'])
+            raise errors.LDAPConnectionFailed(e.args[0]['info'])
         except ldap.INVALID_CREDENTIALS:
-            raise errors.InvalidCredentialsError
+            raise errors.InvalidCredentials
 
     def disconnect(self):
         """Disconnects from ldap."""
@@ -222,12 +222,12 @@ class Domain(object):
           A list of objects.
 
         Raises:
-          errors.QueryTimeoutError: if the timeout period is exceeded
-          errors.ADDomainNotConnectedError: if a search is attempted before calling
+          errors.QueryTimeout: if the timeout period is exceeded
+          errors.ADDomainNotConnected: if a search is attempted before calling
                                             connect() on the Domain object
         """
         if not self._connected:
-            raise errors.ADDomainNotConnectedError
+            raise errors.ADDomainNotConnected
 
         raw = []
         results = []
@@ -248,7 +248,7 @@ class Domain(object):
                                           properties,
                                           serverctrls=[lc])
         except ldap.TIMELIMIT_EXCEEDED:
-            raise errors.QueryTimeoutError
+            raise errors.QueryTimeout
 
         while True:
             rtype, rdata, rmsgid, serverctrls = self._ldap.result3(msgid)
@@ -308,10 +308,10 @@ class Domain(object):
           False on failure
 
         Raises:
-          errors.ADDomainNotConnectedError: if used before calling connect()
+          errors.ADDomainNotConnected: if used before calling connect()
         """
         if not self._connected:
-            raise errors.ADDomainNotConnectedError
+            raise errors.ADDomainNotConnected
 
         modlist = ldap.modlist.addModlist(properties)
         self._ldap.add_s(distinguished_name, modlist)
@@ -329,10 +329,10 @@ class Domain(object):
           False on failure
 
         Raises:
-          errors.ADDomainNotConnectedError: if used before calling connect()
+          errors.ADDomainNotConnected: if used before calling connect()
         """
         if not self._connected:
-            raise errors.ADDomainNotConnectedError
+            raise errors.ADDomainNotConnected
 
         mod = ldap.modlist.modifyModlist(current_props, updated_props)
         result = self._ldap.modify_s(distinguished_name, mod)
@@ -347,10 +347,10 @@ class Domain(object):
           distinguished_name: the full distinguished name of the object
 
         Raises:
-          errors.ADDomainNotConnectedError: if used before calling connect()
+          errors.ADDomainNotConnected: if used before calling connect()
         """
         if not self._connected:
-            raise errors.ADDomainNotConnectedError
+            raise errors.ADDomainNotConnected
 
         self._ldap.delete_s(distinguished_name)
 
@@ -383,7 +383,7 @@ class Domain(object):
         if result:
             return result[0]
 
-        raise errors.ADObjectNotFoundError('User %s not found' % (user_name))
+        raise errors.ADObjectNotFound('User %s not found' % (user_name))
 
     def get_computer_by_name(self, computer_name):
         """Get a Computer object from AD based on its hostname.
@@ -517,7 +517,7 @@ class Domain(object):
           obj: an ADObject object
 
         Raises:
-          errors.ADObjectClassOnlyError: if the object passed is not an ADObject
+          errors.ADObjectClassOnly: if the object passed is not an ADObject
 
         Returns:
           If the object type can be guessed: return an object of that class for
@@ -525,7 +525,7 @@ class Domain(object):
           Otherwise return the object unchanged.
         """
         if not isinstance(obj, ADObject):
-            raise errors.ADObjectClassOnlyError
+            raise errors.ADObjectClassOnly
 
         if 'CN=Computer' in obj.object_category:
             return self.get_computer_by_dn(obj.distinguished_name)
@@ -631,10 +631,10 @@ class ADObject(object):
           properties: a list of properties to retrieve
 
         Raises:
-          errors.NonListParameterError: if a string is passed instead of a list
+          errors.NonListParameter: if a string is passed instead of a list
         """
         if properties.__class__.__name__ in ('str', 'unicode'):
-            raise errors.NonListParameterError
+            raise errors.NonListParameter
 
         ldap_filter = 'distinguishedName=%s' % escape(self.distinguished_name)
         result = self._domain_obj.search(ldap_filter,
@@ -776,10 +776,10 @@ class User(ADObject):
           False on failure
 
         Raises:
-          UserNotLockedOutError: if the user is not locked out
+          UserNotLockedOut: if the user is not locked out
         """
         if not self.locked_out:
-            raise errors.UserNotLockedOutError
+            raise errors.UserNotLockedOut
 
         self.properties['lockoutTime'] = ['0']
         self.set_properties()
@@ -798,10 +798,10 @@ class User(ADObject):
           False on failure
 
         Raises:
-          UserNotEnabledError: if the user is already disabled
+          UserNotEnabled: if the user is already disabled
         """
         if self.disabled:
-            raise errors.UserNotEnabledError
+            raise errors.UserNotEnabled
 
         uac = int(self.properties['userAccountControl'][0])
         value = uac | constants.ADS_UF_ACCOUNTDISABLE
@@ -821,10 +821,10 @@ class User(ADObject):
           False on failure
 
         Raises:
-          UserNotDisabledError: if the user is not disabled
+          UserNotDisabled: if the user is not disabled
         """
         if not self.disabled:
-            raise errors.UserNotDisabledError
+            raise errors.UserNotDisabled
 
         uac = int(self.properties['userAccountControl'][0])
         value = uac ^ constants.ADS_UF_ACCOUNTDISABLE
@@ -867,30 +867,56 @@ class User(ADObject):
         result = self._domain_obj.search(ldap_filter)
         return len(result) > 0
 
-    def change_password(self, oldpassword, newpassword):
+    def change_password(self, newpassword, oldpassword=None):
         """
-        Change users password, must give valid old and valid new password
+        Change user password, must give valid old and valid new password that meets all Domain password policy
+        When doing administrative password change (odlpassword=None) some password policies are not checked, like
+        old remembered passwords.
+
+        Args:
+            self, New password, Old password (optional)
+
+        Returns:
+            InvalidCredentials: When given invalid old user password. Note that giving invalid password few times might
+            lock user account according to Domain Password Policy
+            DoesNotMeetPasswordPolicy: New password does not meed all Domain Password Policies, this includes password
+            age, which is by default one day
+            InsufficientAccess: User cannot change password
+            LDAPError: all other LDAP errors
+
         """
-        # self._domain_obj._ldap.passwd_s(escape(oldpassword), escape(newpassword))
-        oldpassword = unicode('\"' + oldpassword + '\"').encode('utf-16-le')
         newpassword = unicode('\"' + newpassword + '\"').encode('utf-16-le')
-        pass_mod = [(ldap.MOD_DELETE, 'unicodePwd', [oldpassword]), (ldap.MOD_ADD, 'unicodePwd', [newpassword])]
+        #If given old password encode it and try MOD_DELETE/MOD_ADD password, aka. regular user selfchange password
+        #else, try administrative password change, in which case authenticated user must have password change privilege
+        #by default that is Domain Administrator
+        if oldpassword is not None:
+            oldpassword = unicode('\"' + oldpassword + '\"').encode('utf-16-le')
+            pass_mod = [(ldap.MOD_DELETE, 'unicodePwd', [oldpassword]), (ldap.MOD_ADD, 'unicodePwd', [newpassword])]
+        else:
+            pass_mod = [(ldap.MOD_REPLACE, 'unicodePwd', newpassword)]
+
         try:
             self._domain_obj._ldap.modify_s(self.distinguished_name, pass_mod)
         except ldap.CONSTRAINT_VIOLATION, e:
             # If the exceptions's 'info' field begins with:
             # 00000056 - Current passwords do not match
             # 0000052D - New password violates length/complexity/history
+            # 00000005 - Insufficient access, maybe user have 'User cannot change password' option set
             msg = e[0]['desc']
             if e[0]['info'].startswith('00000056'):
                 # Incorrect current password.
-                raise errors.InvalidCredentialsError
+                raise errors.InvalidCredentials
             elif e[0]['info'].startswith('0000052D'):
                 #Does not meet password policy
-                raise errors.DoesNotMeetPasswordPolicyError
-            return msg
+                raise errors.DoesNotMeetPasswordPolicy
+            elif e[0]['info'].starswith('00000005'):
+                #Either user have 'Cannot change password' option set, or changing user password without old password
+                raise errors.InsufficientAccess
+            else:
+                #When everything fails, return original error
+                raise e
         except ldap.LDAPError, e:
-            raise errors.Error('LDAP Error. desc: %s info: %s' % (e[0]['desc'], e[0]['info']))
+            raise errors.ADPasswordSetFailed('LDAP Error. desc: %s info: %s' % (e[0]['desc'], e[0]['info']))
 
 
 class Computer(User):
@@ -1064,10 +1090,10 @@ class Group(ADObject):
 
         Raises:
           errors.MemberExistsError: if the member was already in the group
-          errors.NonListParameterError: if a string was passed by mistake
+          errors.NonListParameter: if a string was passed by mistake
         """
         if member_list.__class__.__name__ in ('str', 'unicode'):
-            raise errors.NonListParameterError
+            raise errors.NonListParameter
 
         members_to_add = []
 
@@ -1076,7 +1102,7 @@ class Group(ADObject):
 
         for member in members_to_add:
             if member in self.properties['member']:
-                raise errors.MemberExistError
+                raise errors.MemberExist
 
         self.properties['member'] += members_to_add
         return self.set_properties()
@@ -1092,18 +1118,18 @@ class Group(ADObject):
           False on failure
 
         Raises:
-          errors.NonListParameterError: if a string was passed by mistake
+          errors.NonListParameter: if a string was passed by mistake
           errors.ADGroupMemberDoesNotExistError: if the object to be removed is not
                                                  a member
         """
         if member_list.__class__.__name__ in ('str', 'unicode'):
-            raise errors.NonListParameterError
+            raise errors.NonListParameter
 
         members_to_remove = []
 
         for user in member_list:
             if user.distinguished_name not in self.properties['member']:
-                raise errors.NotAMemberError
+                raise errors.NotAMember
 
             members_to_remove.append(user.distinguished_name)
 
@@ -1128,10 +1154,10 @@ class Group(ADObject):
           False on failure
 
         Raises:
-          errors.NonListParameterError: if a string was passed by mistake
+          errors.NonListParameter: if a string was passed by mistake
         """
         if member_list.__class__.__name__ in ('str', 'unicode'):
-            raise errors.NonListParameterError
+            raise errors.NonListParameter
 
         members = []
 

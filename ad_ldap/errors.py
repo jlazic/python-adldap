@@ -25,73 +25,73 @@ class InvalidObjectType(Error):
     """Given object is invalid type"""
 
 
-class ObjectPropertyNotFoundError(Error):
+class ObjectPropertyNotFound(Error):
     """An attempt was made to access a property that was not found."""
 
 
-class UserNotDisabledError(Error):
+class UserNotDisabled(Error):
     """An attempt was made to enable a user that was not disabled."""
 
 
-class UserNotEnabledError(Error):
+class UserNotEnabled(Error):
     """An attempt was made to disable a user that was not enabled."""
 
 
-class UserNotLockedOutError(Error):
+class UserNotLockedOut(Error):
     """An attempt was made to unlock a user that is not locked out."""
 
 
-class NoComputerPasswordResetError(Error):
+class NoComputerPasswordReset(Error):
     """Resetting the password for computer objects is not supported."""
 
 
-class LDAPConnectionFailedError(Error):
+class LDAPConnectionFailed(Error):
     """The LDAP server could not be contacted."""
 
 
-class InvalidCredentialsError(Error):
+class InvalidCredentials(Error):
     """The credentials supplied were invalid."""
 
 
-class DoesNotMeetPasswordPolicyError(Error):
+class DoesNotMeetPasswordPolicy(Error):
     """Given password does not meet LDAP password policy"""
 
 
-class QueryTimeoutError(Error):
+class InsufficientAccess(Error):
+    """Raise when authenticated user does not have enough privileges"""
+
+
+class QueryTimeout(Error):
     """The ldap query timed out waiting for results."""
 
 
-class InvalidPropertyFormatError(Error):
+class InvalidPropertyFormat(Error):
     """The properties requested for the object are in an invalid format."""
 
 
-class ADObjectClassOnlyError(Error):
+class ADObjectClassOnly(Error):
     """These results can only be retrieved when using the ADObject class type."""
 
 
-class ADObjectNotFoundError(Error):
+class ADObjectNotFound(Error):
     """The search returned zero results."""
 
 
-class ADDomainNotConnectedError(Error):
+class ADDomainNotConnected(Error):
     """You must call connect() on the Domain object before this operation."""
 
 
-class ADPasswordSetFailedError(Error):
+class ADPasswordSetFailed(Error):
     """The attempt to update the password failed."""
 
 
-class MemberExistError(Error):
+class MemberExist(Error):
     """The group member already exists."""
 
 
-class NotAMemberError(Error):
+class NotAMember(Error):
     """The object is not a member of the group."""
 
 
-class NonListParameterError(Error):
+class NonListParameter(Error):
     """The parameter must be a list or other iterable."""
-
-
-class ServerRefusedOperationError(Error):
-    """The server refused to perform the operation requested."""
