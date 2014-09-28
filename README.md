@@ -302,18 +302,6 @@ ad.get_object_by_name
 ad.get_container_by_dn
 ```
 
-```python
-
-```
-
-
-
-
-
-
-```python
-
-```
 
 ##Similar projects
 List of similar projects that you might find interesting
