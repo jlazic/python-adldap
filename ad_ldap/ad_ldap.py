@@ -1029,7 +1029,7 @@ class Group(ADObject):
 
     def __init__(self, distinguished_name, properties, domain_obj):
         ADObject.__init__(self, distinguished_name, properties, domain_obj)
-        get_props = []
+        get_props = ['member']
 
         if isinstance(properties, dict):
             self.properties = properties
@@ -1047,6 +1047,14 @@ class Group(ADObject):
         if get_props:
             self.get_properties(get_props)
 
+        #If group does not have any members LDAP will not return any member property, therefore
+        #we must check if member property exist, and if not append member property and attach empty list to it
+        #this way get_members method will not fail, and refresh method will fetch new members
+        try:
+            self.properties['member']
+        except KeyError:
+            self.properties['member'] = []
+
         self._property_snapshot = copy.deepcopy(self.properties)
 
     def __repr__(self):
@@ -1061,6 +1069,7 @@ class Group(ADObject):
         Returns:
           A list of objects.
         """
+
         members = []
         output = []
 
@@ -1077,7 +1086,7 @@ class Group(ADObject):
 
     def add_member(self, user):
         """
-        Add single user to group
+        Add single User or Computer object to group
         :param User object
         :return:
         """
@@ -1095,7 +1104,7 @@ class Group(ADObject):
         """Add list of users to group
 
         Args:
-          member_list: a list of User objects to add to group
+          member_list:  a list of User objects or Group objects
 
         Returns:
           True on success
@@ -1121,10 +1130,10 @@ class Group(ADObject):
         return self.set_properties()
 
     def delete_members(self, member_list):
-        """Remove one user from the group.
+        """Remove multiple users from the group.
 
         Args:
-          member_list: a list of the sAMAccountNames of the users to remove
+          member_list:  a list of User objects or Group objects
 
         Returns:
           True on success
@@ -1132,7 +1141,7 @@ class Group(ADObject):
 
         Raises:
           errors.NonListParameter: if a string was passed by mistake
-          errors.ADGroupMemberDoesNotExistError: if the object to be removed is not
+          errors.NotAMember: if the object to be removed is not
                                                  a member
         """
         if member_list.__class__.__name__ in ('str', 'unicode'):
@@ -1140,11 +1149,11 @@ class Group(ADObject):
 
         members_to_remove = []
 
-        for user in member_list:
-            if user.distinguished_name not in self.properties['member']:
+        for member in member_list:
+            if member.distinguished_name not in self.properties['member']:
                 raise errors.NotAMember
 
-            members_to_remove.append(user.distinguished_name)
+            members_to_remove.append(member.distinguished_name)
 
         members_to_remove = set(members_to_remove)
         current = set(self.properties['member'])
@@ -1174,8 +1183,8 @@ class Group(ADObject):
 
         members = []
 
-        for name in member_list:
-            members.append(name.distinguished_name)
+        for member in member_list:
+            members.append(member.distinguished_name)
 
         old_members = set(self.properties['member'])
         new_members = set(members)
