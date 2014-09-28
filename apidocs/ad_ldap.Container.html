@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>ad_ldap.Container : API documentation</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <link href="apidocs.css" type="text/css" rel="stylesheet" />
+    
+    
+  </head>
+  <body>
+    <h1 class="class">a.Container(<a href="ad_ldap.ADObject.html">ADObject</a>) : class documentation</h1>
+    <p>
+      <span id="part">Part of <a href="ad_ldap.html">ad_ldap</a></span>
+      
+      <a href="classIndex.html#ad_ldap.Container">View In Hierarchy</a>
+    </p>
+    <div>
+      
+    </div>
+    <div class="docstring">
+      <div><p>An Active Directory CN or OU object.</p>
+<p>This class adds the get_children method to make it easier to return a 
+list of objects in the container.</p><table class="fieldTable"></table></div>
+    </div>
+
+    
+    <div id="splitTables">
+      <table class="children sortable" id="id9">
+  
+  
+  <tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Container.html#__repr__">__repr__</a></td>
+    <td><span>Print object DN @return: string</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Container.html#get_children">get_children</a></td>
+    <td><span>Retrieves a list of objects inside the container.</span></td>
+  </tr>
+</table>
+      <invisible>
+        <p>
+          Inherited from <a href="ad_ldap.ADObject.html">ADObject</a>:
+        </p>
+        <table class="children sortable" id="id10">
+  
+  
+  <tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#__init__">__init__</a></td>
+    <td><span>Initialize the AD object.</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#distinguished_name">distinguished_name</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#object_class">object_class</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#object_category">object_category</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#created_time">created_time</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#modified_time">modified_time</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#canonical_name">canonical_name</a></td>
+    <td><span>Constructs the canonical name from the distinguished name.</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#get_properties">get_properties</a></td>
+    <td><span>Updates self.properties with the values from AD.</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#refresh">refresh</a></td>
+    <td><span>Update all properties with values from AD.</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#move">move</a></td>
+    <td><span>Move an AD object from one part of the directory to another.</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#delete">delete</a></td>
+    <td><span>delete the current object from AD.</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#set_properties">set_properties</a></td>
+    <td><span>Write changed properties to Active Directory.</span></td>
+  </tr>
+</table>
+      </invisible>
+    </div>
+    
+    
+
+    <div class="function">
+  <a name="ad_ldap.Container.__repr__">
+    
+  </a>
+  <a name="__repr__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    __repr__(self):
+    
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overrides <a href="ad_ldap.ADObject.html#__repr__">ad_ldap.ADObject.__repr__</a></div>
+    <div><p>Print object DN</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">string</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Container.get_children">
+    
+  </a>
+  <a name="get_children">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_children(self, recursive=False):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Retrieves a list of objects inside the container.</p><table class="fieldTable"></table></div>
+  </div>
+</div>
+    <address>
+      <a href="index.html">API Documentation</a> for ad_ldap, generated by <a href="http://codespeak.net/~mwh/pydoctor/">pydoctor</a> at 2014-09-28 17:39:09.
+    </address>
+  </body>
+</html>

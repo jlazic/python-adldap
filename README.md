@@ -5,6 +5,8 @@ This module is designed to use the existing python-ldap module to bind to AD and
 
 This is fork from py-ad-ldap repository on Google Code: https://code.google.com/p/py-ad-ldap/
 
+Documentation can be found in apidocs directory. I have provided some examples, but reading source code will provide you with most this you need to know.
+
 ### Requirements
 python-ldap =< 2.4
 
@@ -138,6 +140,70 @@ Out[49]: ['Will work for money']
 
 ```
 
+As you can guess from the name, methods enable and disable will enable and disable User
+
+```python
+In [24]: user = ad.get_user_by_name('py.user')
+
+In [25]: user.disabled
+Out[25]: False
+
+In [26]: user.disable()
+Out[26]: True
+
+In [27]: user.disabled
+Out[27]: True
+
+In [28]: user.enable()
+Out[28]: True
+
+In [29]: user.disabled
+Out[29]: False
+```
+
+###Password change
+
+There are 2 ways to change user password. Selfchange, and administrative change. In first case you must supply both old user password, and new password. During this user that you used for connecting to LDAP/AD does not need to have privilege to change other users password.
+
+```python
+In [5]: user = ad.get_user_by_name('deda.milan')
+
+In [7]: user.change_password(oldpassword='Password01', newpassword='SuperSecret961') 
+Out[7]: True
+
+```
+
+If you pass wrong old password, InvalidCredentials exception will be raised
+
+```python
+In [15]: user.change_password(oldpassword='WrongOldPass', newpassword='SuperS.90')
+    920                 # Incorrect current password.
+--> 921                 raise errors.InvalidCredentials(message)
+InvalidCredentials: LDAP Error. desc: Constraint violation info: 00000056: AtrErr: DSID-03191083, #1:
+	0: 00000056: DSID-03191083, problem 1005 (CONSTRAINT_ATT_TYPE), data 0, Att 9005a (unicodePwd)
+
+```
+
+Also, new password must be aligned with your domain password policy, so giving weak new password will result in raising DoesNotMeetPasswordPolicy exception
+
+```python
+In [16]: user.change_password(oldpassword='Password01', newpassword='weakpass')
+    923                 #Does not meet password policy
+--> 924                 raise errors.DoesNotMeetPasswordPolicy(message)
+
+DoesNotMeetPasswordPolicy: LDAP Error. desc: Constraint violation info: 0000052D: AtrErr: DSID-03191083, #1:
+	0: 0000052D: DSID-03191083, problem 1005 (CONSTRAINT_ATT_TYPE), data 0, Att 9005a (unicodePwd)
+	
+```
+
+If you connect to domain with administrative user that has privilege to change other users passwords, you do not need to supply old password
+
+```python
+In [17]: user.change_password(oldpassword=None, newpassword='Password99')
+Out[17]: True
+```
+
+When changing user password this way, all the same password policies apply, except password history policy.
 
 ###Groups
 
@@ -248,3 +314,10 @@ ad.get_container_by_dn
 ```python
 
 ```
+
+##Similar projects
+List of similar projects that you might find interesting
+
+https://github.com/dfwarden/ActiveDirectory-Python
+http://bazaar.launchpad.net/~csawyer-yumaed/adpasswd/trunk/view/head:/adpasswd.py
+https://github.com/geertj/python-ad

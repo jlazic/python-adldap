@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>ad_ldap.Group : API documentation</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <link href="apidocs.css" type="text/css" rel="stylesheet" />
+    
+    
+  </head>
+  <body>
+    <h1 class="class">a.Group(<a href="ad_ldap.ADObject.html">ADObject</a>) : class documentation</h1>
+    <p>
+      <span id="part">Part of <a href="ad_ldap.html">ad_ldap</a></span>
+      
+      <a href="classIndex.html#ad_ldap.Group">View In Hierarchy</a>
+    </p>
+    <div>
+      
+    </div>
+    <div class="docstring">
+      <div><p>An Active Directory Group object.</p>
+<p>This class provides extra methods for manipulating group 
+memberships.</p><table class="fieldTable"></table></div>
+    </div>
+
+    
+    <div id="splitTables">
+      <table class="children sortable" id="id11">
+  
+  
+  <tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Group.html#__init__">__init__</a></td>
+    <td><span>Initialize the AD object.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Group.html#__repr__">__repr__</a></td>
+    <td><span>Print object DN @return: string</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Group.html#get_members">get_members</a></td>
+    <td><span>Retrieves a list of objects that are members.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Group.html#add_member">add_member</a></td>
+    <td><span>Add single instance of User, Computer or Group to group</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Group.html#add_members">add_members</a></td>
+    <td><span>Add list of users to group</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Group.html#delete_member">delete_member</a></td>
+    <td><span>Delete single User, Computer or Group object from group @param member: 
+User, Computer or Group object</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Group.html#delete_members">delete_members</a></td>
+    <td><span>Remove multiple users from the group.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Group.html#overwrite_members">overwrite_members</a></td>
+    <td><span>Overwrite the member list with a list of users.</span></td>
+  </tr>
+</table>
+      <invisible>
+        <p>
+          Inherited from <a href="ad_ldap.ADObject.html">ADObject</a>:
+        </p>
+        <table class="children sortable" id="id12">
+  
+  
+  <tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#distinguished_name">distinguished_name</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#object_class">object_class</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#object_category">object_category</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#created_time">created_time</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#modified_time">modified_time</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#canonical_name">canonical_name</a></td>
+    <td><span>Constructs the canonical name from the distinguished name.</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#get_properties">get_properties</a></td>
+    <td><span>Updates self.properties with the values from AD.</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#refresh">refresh</a></td>
+    <td><span>Update all properties with values from AD.</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#move">move</a></td>
+    <td><span>Move an AD object from one part of the directory to another.</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#delete">delete</a></td>
+    <td><span>delete the current object from AD.</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.ADObject.html#set_properties">set_properties</a></td>
+    <td><span>Write changed properties to Active Directory.</span></td>
+  </tr>
+</table>
+      </invisible>
+    </div>
+    
+    
+
+    <div class="function">
+  <a name="ad_ldap.Group.__init__">
+    
+  </a>
+  <a name="__init__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    __init__(self, distinguished_name, properties, domain_obj):
+    
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overrides <a href="ad_ldap.ADObject.html#__init__">ad_ldap.ADObject.__init__</a></div>
+    <div><p>Initialize the AD object.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">distinguished_name</td><td>the full distinguished name of the object</td></tr><tr><td></td><td class="fieldArg">properties</td><td>if a list, a list of properties to retrieve.  if a hash, it is a 
+pre-populated list of properties.  If a hash is provided and mandatory 
+properties are missing, then they will be retrieved by an ldap query</td></tr><tr><td></td><td class="fieldArg">domain_obj</td><td>the Domain object that the AD object is associated with</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Group.__repr__">
+    
+  </a>
+  <a name="__repr__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    __repr__(self):
+    
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overrides <a href="ad_ldap.ADObject.html#__repr__">ad_ldap.ADObject.__repr__</a></div>
+    <div><p>Print object DN</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">string</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Group.get_members">
+    
+  </a>
+  <a name="get_members">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_members(self):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Retrieves a list of objects that are members.</p>
+<p>get_members will try to find the appropriate object type for the member 
+if if is a user, computer or group.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">A list of objects.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Group.add_member">
+    
+  </a>
+  <a name="add_member">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    add_member(self, member):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Add single instance of User, Computer or Group to group</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">member</td><td>instance of User, Computer or Group</td></tr><tr class="fieldStart"><td class="fieldName">Raises</td><td class="fieldArg">errors.MemberExists</td><td>if the member was already in the group</td></tr><tr><td></td><td class="fieldArg">errors.InvalidObjectType</td><td>if wrong object type passed</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Group.add_members">
+    
+  </a>
+  <a name="add_members">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    add_members(self, member_list):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Add list of users to group</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">member_list</td><td>a list of User objects or Group objects</td></tr><tr class="fieldStart"><td class="fieldName">Raises</td><td class="fieldArg">errors.MemberExists</td><td>if the member was already in the group</td></tr><tr><td></td><td class="fieldArg">errors.NonListParameter</td><td>if a string was passed by mistake</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Group.delete_member">
+    
+  </a>
+  <a name="delete_member">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    delete_member(self, member):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Delete single User, Computer or Group object from group</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">member</td><td>User, Computer or Group object</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Group.delete_members">
+    
+  </a>
+  <a name="delete_members">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    delete_members(self, member_list):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Remove multiple users from the group.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">member_list</td><td>a list of User objects or Group objects</td></tr><tr class="fieldStart"><td class="fieldName">Raises</td><td class="fieldArg">errors.NonListParameter</td><td>if a string was passed by mistake</td></tr><tr><td></td><td class="fieldArg">errors.NotAMember</td><td>if the object to be removed is not a member</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Group.overwrite_members">
+    
+  </a>
+  <a name="overwrite_members">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    overwrite_members(self, member_list):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Overwrite the member list with a list of users.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">member_list</td><td>a list of User objects or Group objects</td></tr><tr class="fieldStart"><td class="fieldName">Raises</td><td class="fieldArg">errors.NonListParameter</td><td>if a string was passed by mistake</td></tr></table></div>
+  </div>
+</div>
+    <address>
+      <a href="index.html">API Documentation</a> for ad_ldap, generated by <a href="http://codespeak.net/~mwh/pydoctor/">pydoctor</a> at 2014-09-28 17:39:09.
+    </address>
+  </body>
+</html>

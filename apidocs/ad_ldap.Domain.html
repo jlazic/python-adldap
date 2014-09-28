@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>ad_ldap.Domain : API documentation</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <link href="apidocs.css" type="text/css" rel="stylesheet" />
+    
+    
+  </head>
+  <body>
+    <h1 class="class">a.Domain(<span title="object">object</span>) : class documentation</h1>
+    <p>
+      <span id="part">Part of <a href="ad_ldap.html">ad_ldap</a></span>
+      
+      <a href="classIndex.html#ad_ldap.Domain">View In Hierarchy</a>
+    </p>
+    <div>
+      
+    </div>
+    <div class="docstring">
+      <div><p>Represents an Active Directory Domain.</p>
+<p>The Domain object performs all interactions with Active Directory, 
+including searching for objects, modifying objects, and deleting objects.  
+Some tasks that can be called from a method of an ADObject, like delete() 
+actually call the parent Domain object's method to do the dirty work.</p><table class="fieldTable"></table></div>
+    </div>
+
+    
+    <div id="splitTables">
+      <table class="children sortable" id="id2">
+  
+  
+  <tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#__init__">__init__</a></td>
+    <td><span>Initialize the Domain object.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#__repr__">__repr__</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#connect">connect</a></td>
+    <td><span>Connect to the ldap server.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#disconnect">disconnect</a></td>
+    <td><span>Disconnects from ldap.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#get_root_dse_attrs">get_root_dse_attrs</a></td>
+    <td><span>Gets the root DSE attributes.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#dns_name">dns_name</a></td>
+    <td><span>Constructs the dns name of the domain from the distinguished name.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#search">search</a></td>
+    <td><span>Searches ActiveDirectory for objects that match the ldap filter.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#new_object">new_object</a></td>
+    <td><span>Creates a new object in Active Directory.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#update_object">update_object</a></td>
+    <td><span>Updates an object in Active Directory.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#delete_object">delete_object</a></td>
+    <td><span>Delete an object from Active Directory.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#get_object_by_name">get_object_by_name</a></td>
+    <td><span>Get an ADObject from AD based on its sAMAccountName.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#get_user_by_name">get_user_by_name</a></td>
+    <td><span>Get a user object from AD based on its sAMAccountName.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#get_computer_by_name">get_computer_by_name</a></td>
+    <td><span>Get a Computer object from AD based on its hostname.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#get_group_by_name">get_group_by_name</a></td>
+    <td><span>Get a Group object from AD based on its hostname.</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#get_object_by_dn">get_object_by_dn</a></td>
+    <td><span>Gets an ADObject object based on the distinguished name(DN).</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#get_user_by_dn">get_user_by_dn</a></td>
+    <td><span>Gets a User object based on the distinguished name(DN).</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#get_computer_by_dn">get_computer_by_dn</a></td>
+    <td><span>Gets a Computer object based on the distinguished name(DN).</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#get_group_by_dn">get_group_by_dn</a></td>
+    <td><span>Gets a Group object based on the distinguished name(DN).</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#get_container_by_dn">get_container_by_dn</a></td>
+    <td><span>Gets a Group object based on the distinguished name(DN).</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="ad_ldap.Domain.html#guess_object_type">guess_object_type</a></td>
+    <td><span>Try to find the best ad_ldap object class for the object.</span></td>
+  </tr>
+</table>
+      
+    </div>
+    
+    
+
+    <div class="function">
+  <a name="ad_ldap.Domain.__init__">
+    
+  </a>
+  <a name="__init__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    __init__(self):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Initialize the Domain object.</p><table class="fieldTable"></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.__repr__">
+    
+  </a>
+  <a name="__repr__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    __repr__(self):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div class="undocumented">Undocumented</div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.connect">
+    
+  </a>
+  <a name="connect">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    connect(self, ldap_host, user, password, cert_dir=None, cert_file=None):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Connect to the ldap server.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">ldap_host</td><td>The ldap host to connect to, in format ldap://hostname:port or 
+ldaps://hostname:port. Port is optional.</td></tr><tr><td></td><td class="fieldArg">user</td><td>the username for authentication, must be given with @sufix, ie. 
+user@domain.local. This is important if user has dot as part of username 
+like first.last name</td></tr><tr><td></td><td class="fieldArg">password</td><td>the password for authentication</td></tr><tr><td></td><td class="fieldArg">cert_dir</td><td>The directory containing the SSL cert file</td></tr><tr><td></td><td class="fieldArg">cert_file</td><td>The file name of the cert</td></tr><tr class="fieldStart"><td class="fieldName">Raises</td><td colspan="2">errors.LDAPConnectionFailed: if no ldap connection can be made</td></tr><tr><td></td><td colspan="2">errors.InvalidCredentials: if the ldap credentials are not accepted</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.disconnect">
+    
+  </a>
+  <a name="disconnect">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    disconnect(self):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Disconnects from ldap.</p><table class="fieldTable"></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.get_root_dse_attrs">
+    
+  </a>
+  <a name="get_root_dse_attrs">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_root_dse_attrs(self):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Gets the root DSE attributes.</p><table class="fieldTable"></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.dns_name">
+    
+  </a>
+  <a name="dns_name">
+    
+  </a>
+  <div class="functionHeader">
+    @property<br />
+    def
+    dns_name(self):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Constructs the dns name of the domain from the distinguished name.</p><table class="fieldTable"></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.search">
+    
+  </a>
+  <a name="search">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    search(self, ldap_filter, base_dn=None, obj_class=None, scope=ldap.SCOPE_SUBTREE, properties=None):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Searches ActiveDirectory for objects that match the ldap filter.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">ldap_filter</td><td>an LDAP filter</td></tr><tr><td></td><td class="fieldArg">base_dn</td><td>the distinguished name of the container to start in</td></tr><tr><td></td><td class="fieldArg">obj_class</td><td>can be any class that inherits from ADObject</td></tr><tr><td></td><td class="fieldArg">scope</td><td>one of the ldap SCOPE_ constants</td></tr><tr><td></td><td class="fieldArg">properties</td><td>a list of properties to retrieve</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">A list of objects.</td></tr><tr class="fieldStart"><td class="fieldName">Raises</td><td class="fieldArg">errors.QueryTimeout</td><td>if the timeout period is exceeded</td></tr><tr><td></td><td class="fieldArg">errors.ADDomainNotConnected</td><td>if a search is attempted before calling connect() on the Domain object</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.new_object">
+    
+  </a>
+  <a name="new_object">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    new_object(self, distinguished_name, properties):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Creates a new object in Active Directory.</p>
+<p>Join one of the constants.CAT_ constants with the Domain object's 
+dn_configuration property to get a DN for objectCategory. (e.g. 
+'objectCategory': '%s%s' % (constants.CAT_USER, ad.dn_configuration)) Each 
+object also needs the correct objectClass.  Check out the constants.CLASS_*
+constants. Also, don't forget that the values of the properties hash should
+all be lists, even if they are single-valued attributes.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">distinguished_name</td><td>the desired distinguished name of the object</td></tr><tr><td></td><td class="fieldArg">properties</td><td>a hash of properties and values to apply to the new object</td></tr><tr class="fieldStart"><td class="fieldName">Raises</td><td class="fieldArg">errors.ADDomainNotConnected</td><td>if used before calling connect()</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.update_object">
+    
+  </a>
+  <a name="update_object">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    update_object(self, distinguished_name, current_props, updated_props):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Updates an object in Active Directory.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">distinguished_name</td><td>the distinguished name of the object to be modified</td></tr><tr><td></td><td class="fieldArg">current_props</td><td>a dict of the current properties and values</td></tr><tr><td></td><td class="fieldArg">updated_props</td><td>a dict of the new properties and values</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">on failure</td></tr><tr class="fieldStart"><td class="fieldName">Raises</td><td class="fieldArg">errors.ADDomainNotConnected</td><td>if used before calling connect()</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.delete_object">
+    
+  </a>
+  <a name="delete_object">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    delete_object(self, distinguished_name):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Delete an object from Active Directory.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">distinguished_name</td><td>the full distinguished name of the object</td></tr><tr class="fieldStart"><td class="fieldName">Raises</td><td class="fieldArg">errors.ADDomainNotConnected</td><td>if used before calling connect()</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.get_object_by_name">
+    
+  </a>
+  <a name="get_object_by_name">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_object_by_name(self, name):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Get an ADObject from AD based on its sAMAccountName.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">name</td><td>the Windows username (sAMAccountName) of the user</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">Nothing if no user found.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.get_user_by_name">
+    
+  </a>
+  <a name="get_user_by_name">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_user_by_name(self, user_name):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Get a user object from AD based on its sAMAccountName.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">user_name</td><td>the Windows username (sAMAccountName) of the user</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">A user object on success, nothing if no user found.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.get_computer_by_name">
+    
+  </a>
+  <a name="get_computer_by_name">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_computer_by_name(self, computer_name):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Get a Computer object from AD based on its hostname.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">computer_name</td><td>the hostname of the computer.  can be fqdn, sAMAccountName, or computername</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">A Computer object on success, nothing if no computer found.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.get_group_by_name">
+    
+  </a>
+  <a name="get_group_by_name">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_group_by_name(self, group_name):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Get a Group object from AD based on its hostname.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">group_name</td><td>the name of the group.</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">A Group object on success, nothing if no computer found.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.get_object_by_dn">
+    
+  </a>
+  <a name="get_object_by_dn">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_object_by_dn(self, distinguished_name):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Gets an ADObject object based on the distinguished name(DN).</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">distinguished_name</td><td>A string with the distinguished name of the object</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">An ADObject object on success, nothing if no user found.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.get_user_by_dn">
+    
+  </a>
+  <a name="get_user_by_dn">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_user_by_dn(self, distinguished_name):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Gets a User object based on the distinguished name(DN).</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">distinguished_name</td><td>A string with the distinguished name of the object</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">A User object on success, nothing if no user found.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.get_computer_by_dn">
+    
+  </a>
+  <a name="get_computer_by_dn">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_computer_by_dn(self, distinguished_name):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Gets a Computer object based on the distinguished name(DN).</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">distinguished_name</td><td>A string with the distinguished name of the object</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">A Computer object on success, nothing if no computer found.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.get_group_by_dn">
+    
+  </a>
+  <a name="get_group_by_dn">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_group_by_dn(self, distinguished_name):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Gets a Group object based on the distinguished name(DN).</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">distinguished_name</td><td>A string with the distinguished name of the object</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">A User object on success, nothing if no user found.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.get_container_by_dn">
+    
+  </a>
+  <a name="get_container_by_dn">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    get_container_by_dn(self, distinguished_name):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Gets a Group object based on the distinguished name(DN).</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">distinguished_name</td><td>A string with the distinguished name of the object</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">A Group object on success, nothing if no group found.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.Domain.guess_object_type">
+    
+  </a>
+  <a name="guess_object_type">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    guess_object_type(self, obj):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Try to find the best ad_ldap object class for the object.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">obj</td><td>an ADObject object</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">If the object type can be guessed: return an object of that class for the 
+same distinguished name. Otherwise return the object unchanged.</td></tr><tr class="fieldStart"><td class="fieldName">Raises</td><td class="fieldArg">errors.ADObjectClassOnly</td><td>if the object passed is not an ADObject</td></tr></table></div>
+  </div>
+</div>
+    <address>
+      <a href="index.html">API Documentation</a> for ad_ldap, generated by <a href="http://codespeak.net/~mwh/pydoctor/">pydoctor</a> at 2014-09-28 17:39:09.
+    </address>
+  </body>
+</html>

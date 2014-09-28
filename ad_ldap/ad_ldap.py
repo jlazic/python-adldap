@@ -1,5 +1,6 @@
 #!/usr/bin/python
-"""A module for using ldap to manipulate objects in AD.
+"""
+A module for using ldap to manipulate objects in AD.
 
 This module creates two basic object classes: Domain, and ADObject.
 
@@ -47,31 +48,27 @@ import ldap.modlist
 
 
 def ad_time_to_unix(ad_time):
-    """Converts AD double-wide int format to seconds since the epoch format.
+    """
+    Converts AD double-wide int format to seconds since the epoch format. Note: cribbed from filetimes.py at http://reliablybroken.com/b/2009/09/
 
-    Args:
-      ad_time: a 64-bit integer time format used by AD with the number of 100ns
-               intervals since January 1, 1601.
+    @param ad_time: a 64-bit integer time format used by AD with the number of 100ns
+        intervals since January 1, 1601.
 
-    Note: cribbed from filetimes.py at http://reliablybroken.com/b/2009/09/
-
-    Returns:
-      An int with the number of seconds since January 1, 1970.
+    @return: An int with the number of seconds since January 1, 1970.
     """
     return int((ad_time - constants.EPOCH_AS_FILETIME) / 10000000)
 
 
 def text_time_to_unix(text_time):
-    """Converts alternate time format text strings to seconds since the epoch.
+    """
+    Converts alternate time format text strings to seconds since the epoch.
 
     Some Active Directory properties are stored in a YYYYMMDDHHMMSS.0Z format.
     See http://msdn.microsoft.com/en-us/library/aa772189(VS.85).aspx for details.
 
-    Args:
-      text_time: the string containing the time value.
+    @param text_time: the string containing the time value.
 
-    Returns:
-      The number of seconds since the epoch.
+    @return: The number of seconds since the epoch.
     """
     groups = constants.RE_TEXT_TIME.findall(text_time)
     time_tuple = tuple([int(x) for x in groups[0] + (0, 0, 0)])
@@ -79,7 +76,8 @@ def text_time_to_unix(text_time):
 
 
 def bitmask_bool(bitmask, value):
-    """Returns True or False depending on whether a particular bit has been set.
+    """
+    Returns True or False depending on whether a particular bit has been set.
 
     Microsoft uses bitmasks as a compact way of denoting a number of boolean
     settings.  The second bit, for example, might be the ADS_UF_ACCOUNTDISABLE
@@ -92,12 +90,10 @@ def bitmask_bool(bitmask, value):
     bitmask_bool(user.user_account_control, constants.ADS_UF_ACCOUNTDISABLE)
     This will return True if the bit is set in user.user_account_control.
 
-    Args:
-      bitmask: a number representing a bitmask
-      value:  the value to be checked (usually a known constant)
+    @param: bitmask: a number representing a bitmask
+    @param value:  the value to be checked (usually a known constant)
 
-    Returns:
-      True if the bit has been set, False if it has not.
+    @return: True if the bit has been set, False if it has not.
     """
     if int(bitmask) & int(value):
         return True
@@ -106,13 +102,12 @@ def bitmask_bool(bitmask, value):
 
 
 def escape(text):
-    """Escapes text to be used in an ldap filter.
+    """
+    Escapes text to be used in an ldap filter.
 
-    Args:
-      text: The text to be escaped
+    @param text: The text to be escaped
 
-    Returns:
-      The escaped text.
+    @return: The escaped text.
     """
     return ldap.filter.escape_filter_chars(text)
 
@@ -142,19 +137,18 @@ class Domain(object):
             return 'Domain: Not Connected'
 
     def connect(self, ldap_host, user, password, cert_dir=None, cert_file=None):
-        """connect to the ldap server.
+        """
+        Connect to the ldap server.
 
-        Args:
-          ldap_host:  The ldap host to connect to
-          user: the username for authentication, must be given with @sufix, ie. user@domain.local. This is important
+        @param ldap_host:  The ldap host to connect to, in format ldap://hostname:port or ldaps://hostname:port. Port is optional.
+        @param user: the username for authentication, must be given with @sufix, ie. user@domain.local. This is important
             if user has dot as part of username like first.last name
-          password: the password for authentication
-          cert_dir: The directory containing the SSL cert file
-          cert_file: The file name of the cert
+        @param password: the password for authentication
+        @param cert_dir: The directory containing the SSL cert file
+        @param cert_file: The file name of the cert
 
-        Raises:
-          errors.LDAPConnectionFailed: if no ldap connection can be made
-          errors.InvalidCredentials: if the ldap credentials are not accepted
+        @raise: errors.LDAPConnectionFailed: if no ldap connection can be made
+        @raise: errors.InvalidCredentials: if the ldap credentials are not accepted
         """
 
         if self._connected:
@@ -209,22 +203,19 @@ class Domain(object):
 
     def search(self, ldap_filter, base_dn=None, obj_class=None,
                scope=ldap.SCOPE_SUBTREE, properties=None):
-        """Searches ActiveDirectory for objects that match the ldap filter.
+        """
+        Searches ActiveDirectory for objects that match the ldap filter.
 
-        Args:
-          ldap_filter: an LDAP filter
-          base_dn: the distinguished name of the container to start in
-          obj_class: can be any class that inherits from ADObject
-          scope: one of the ldap SCOPE_ constants
-          properties: a list of properties to retrieve
+        @param ldap_filter: an LDAP filter
+        @param base_dn: the distinguished name of the container to start in
+        @param obj_class: can be any class that inherits from ADObject
+        @param scope: one of the ldap SCOPE_ constants
+        @param properties: a list of properties to retrieve
 
-        Returns:
-          A list of objects.
+        @return: A list of objects.
 
-        Raises:
-          errors.QueryTimeout: if the timeout period is exceeded
-          errors.ADDomainNotConnected: if a search is attempted before calling
-                                            connect() on the Domain object
+        @raise errors.QueryTimeout: if the timeout period is exceeded
+        @raise errors.ADDomainNotConnected: if a search is attempted before calling connect() on the Domain object
         """
         if not self._connected:
             raise errors.ADDomainNotConnected
@@ -288,27 +279,22 @@ class Domain(object):
         return results
 
     def new_object(self, distinguished_name, properties):
-        """Creates a new object in Active Directory.
+        """
+        Creates a new object in Active Directory.
 
-        Args:
-          distinguished_name: the desired distinguished name of the object
-          properties: a hash of properties and values to apply to the new object
+        Join one of the constants.CAT_ constants with the Domain object's
+        dn_configuration property to get a DN for objectCategory.
+        (e.g. 'objectCategory': '%s%s'
+        % (constants.CAT_USER, ad.dn_configuration))
+        Each object also needs the correct objectClass.  Check out the
+        constants.CLASS_* constants.
+        Also, don't forget that the values of the properties hash should
+        all be lists, even if they are single-valued attributes.
 
-        Note:  Join one of the constants.CAT_ constants with the Domain object's
-               dn_configuration property to get a DN for objectCategory.
-               (e.g. 'objectCategory': '%s%s'
-                % (constants.CAT_USER, ad.dn_configuration))
-               Each object also needs the correct objectClass.  Check out the
-               constants.CLASS_* constants.
-               Also, don't forget that the values of the properties hash should
-               all be lists, even if they are single-valued attributes.
+        @param distinguished_name: the desired distinguished name of the object
+        @param properties: a hash of properties and values to apply to the new object
 
-        Returns:
-          True on success
-          False on failure
-
-        Raises:
-          errors.ADDomainNotConnected: if used before calling connect()
+        @raise errors.ADDomainNotConnected: if used before calling connect()
         """
         if not self._connected:
             raise errors.ADDomainNotConnected
@@ -319,17 +305,14 @@ class Domain(object):
     def update_object(self, distinguished_name, current_props, updated_props):
         """Updates an object in Active Directory.
 
-        Args:
-          distinguished_name: the distinguished name of the object to be modified
-          current_props: a dict of the current properties and values
-          updated_props: a dict of the new properties and values
+        @param distinguished_name: the distinguished name of the object to be modified
+        @param current_props: a dict of the current properties and values
+        @param updated_props: a dict of the new properties and values
 
-        Returns:
-          True on success
-          False on failure
+        @return True: on success
+        @return False: on failure
 
-        Raises:
-          errors.ADDomainNotConnected: if used before calling connect()
+        @raise errors.ADDomainNotConnected: if used before calling connect()
         """
         if not self._connected:
             raise errors.ADDomainNotConnected
@@ -341,13 +324,12 @@ class Domain(object):
             return True
 
     def delete_object(self, distinguished_name):
-        """delete an object from Active Directory.
+        """
+        Delete an object from Active Directory.
 
-        Args:
-          distinguished_name: the full distinguished name of the object
+        @param distinguished_name: the full distinguished name of the object
 
-        Raises:
-          errors.ADDomainNotConnected: if used before calling connect()
+        @raise errors.ADDomainNotConnected: if used before calling connect()
         """
         if not self._connected:
             raise errors.ADDomainNotConnected
@@ -355,13 +337,13 @@ class Domain(object):
         self._ldap.delete_s(distinguished_name)
 
     def get_object_by_name(self, name):
-        """Get an ADObject from AD based on its sAMAccountName.
+        """
+        Get an ADObject from AD based on its sAMAccountName.
 
-        Args:
-          name: the Windows username (sAMAccountName) of the user
+        @param name: the Windows username (sAMAccountName) of the user
 
-        Returns:
-          An ADObject object on success, nothing if no user found.
+        @return ADObject: An ADObject object on success
+        @return None: Nothing if no user found.
         """
         result = self.search('sAMAccountName=%s' % escape(name))
 
@@ -369,13 +351,12 @@ class Domain(object):
             return result[0]
 
     def get_user_by_name(self, user_name):
-        """Get a user object from AD based on its sAMAccountName.
+        """
+        Get a user object from AD based on its sAMAccountName.
 
-        Args:
-          user_name: the Windows username (sAMAccountName) of the user
+        @param user_name: the Windows username (sAMAccountName) of the user
 
-        Returns:
-          A user object on success, nothing if no user found.
+        @return User: A user object on success, nothing if no user found.
         """
         result = self.search('sAMAccountName=%s'
                              % escape(user_name), obj_class=User)
@@ -386,13 +367,12 @@ class Domain(object):
         raise errors.ADObjectNotFound('User %s not found' % user_name)
 
     def get_computer_by_name(self, computer_name):
-        """Get a Computer object from AD based on its hostname.
+        """
+        Get a Computer object from AD based on its hostname.
 
-        Args:
-          computer_name: the hostname of the computer.  can be fqdn, sAMAccountName,
-                         or computername
-        Returns:
-          A Computer object on success, nothing if no computer found.
+        @param computer_name: the hostname of the computer.  can be fqdn, sAMAccountName, or computername
+
+        @return Computer: A Computer object on success, nothing if no computer found.
         """
         account = constants.RE_HOSTNAME.match(computer_name).group()
 
@@ -406,12 +386,12 @@ class Domain(object):
             return result[0]
 
     def get_group_by_name(self, group_name):
-        """Get a Group object from AD based on its hostname.
+        """
+        Get a Group object from AD based on its hostname.
 
-        Args:
-          group_name: the name of the group.
-        Returns:
-          A Group object on success, nothing if no computer found.
+        @param group_name: the name of the group.
+
+        @return Group: A Group object on success, nothing if no computer found.
         """
         result = self.search('sAMAccountName=%s'
                              % escape(group_name), obj_class=Group)
@@ -420,13 +400,12 @@ class Domain(object):
             return result[0]
 
     def get_object_by_dn(self, distinguished_name):
-        """Gets an ADObject object based on the distinguished name(DN).
+        """
+        Gets an ADObject object based on the distinguished name(DN).
 
-        Args:
-          distinguished_name:  A string with the distinguished name of the object
+        @param distinguished_name:  A string with the distinguished name of the object
 
-        Returns:
-          An ADObject object on success, nothing if no user found.
+        @return ADObject: An ADObject object on success, nothing if no user found.
         """
         ldap_filter = '(distinguishedName=%s)' % escape(distinguished_name)
         result = self.search(ldap_filter, obj_class=User)
@@ -435,13 +414,12 @@ class Domain(object):
             return result[0]
 
     def get_user_by_dn(self, distinguished_name):
-        """Gets a User object based on the distinguished name(DN).
+        """
+        Gets a User object based on the distinguished name(DN).
 
-        Args:
-          distinguished_name:  A string with the distinguished name of the object
+        @param distinguished_name:  A string with the distinguished name of the object
 
-        Returns:
-          A User object on success, nothing if no user found.
+        @return User: A User object on success, nothing if no user found.
         """
         ldap_filter = ('(&(distinguishedName=%s)(objectCategory=%s%s))'
                        % (escape(distinguished_name),
@@ -453,13 +431,12 @@ class Domain(object):
             return result[0]
 
     def get_computer_by_dn(self, distinguished_name):
-        """Gets a Computer object based on the distinguished name(DN).
+        """
+        Gets a Computer object based on the distinguished name(DN).
 
-        Args:
-          distinguished_name:  A string with the distinguished name of the object
+        @param distinguished_name:  A string with the distinguished name of the object
 
-        Returns:
-          A Computer object on success, nothing if no computer found.
+        @return Computer: A Computer object on success, nothing if no computer found.
         """
         ldap_filter = ('(&(distinguishedName=%s)(objectCategory=%s%s))'
                        % (escape(distinguished_name),
@@ -471,13 +448,12 @@ class Domain(object):
             return result[0]
 
     def get_group_by_dn(self, distinguished_name):
-        """Gets a Group object based on the distinguished name(DN).
+        """
+        Gets a Group object based on the distinguished name(DN).
 
-        Args:
-          distinguished_name:  A string with the distinguished name of the object
+        @param distinguished_name:  A string with the distinguished name of the object
 
-        Returns:
-          A User object on success, nothing if no user found.
+        @return User: A User object on success, nothing if no user found.
         """
         ldap_filter = ('(&(distinguishedName=%s)(objectCategory=%s%s))'
                        % (escape(distinguished_name),
@@ -489,13 +465,12 @@ class Domain(object):
             return result[0]
 
     def get_container_by_dn(self, distinguished_name):
-        """Gets a Group object based on the distinguished name(DN).
+        """
+        Gets a Group object based on the distinguished name(DN).
 
-        Args:
-          distinguished_name:  A string with the distinguished name of the object
+        @param distinguished_name:  A string with the distinguished name of the object
 
-        Returns:
-          A Group object on success, nothing if no group found.
+        @return Group: A Group object on success, nothing if no group found.
         """
         ldap_filter = ''.join(['(&(distinguishedName=%s)'
                                % escape(distinguished_name),
@@ -511,18 +486,15 @@ class Domain(object):
             return result[0]
 
     def guess_object_type(self, obj):
-        """Try to find the best ad_ldap object class for the object.
+        """
+        Try to find the best ad_ldap object class for the object.
 
-        Args:
-          obj: an ADObject object
+        @param obj: an ADObject object
 
-        Raises:
-          errors.ADObjectClassOnly: if the object passed is not an ADObject
+        @raise errors.ADObjectClassOnly: if the object passed is not an ADObject
 
-        Returns:
-          If the object type can be guessed: return an object of that class for
-                                             the same distinguished name
-          Otherwise return the object unchanged.
+        @return ADObject: If the object type can be guessed: return an object of that class for
+            the same distinguished name. Otherwise return the object unchanged.
         """
         if not isinstance(obj, ADObject):
             raise errors.ADObjectClassOnly
@@ -545,15 +517,15 @@ class ADObject(object):
     """A generic AD Object."""
 
     def __init__(self, distinguished_name, properties, domain_obj):
-        """Initialize the AD object.
+        """
+        Initialize the AD object.
 
-        Args:
-          distinguished_name: the full distinguished name of the object
-          properties: if a list, a list of properties to retrieve.  if a hash, it is
-                      a pre-populated list of properties.  If a hash is provided and
-                      mandatory properties are missing, then they will be retrieved
-                      by an ldap query
-          domain_obj: the Domain object that the AD object is associated with
+        @param distinguished_name: the full distinguished name of the object
+        @param properties: if a list, a list of properties to retrieve.  if a hash, it is
+            a pre-populated list of properties.  If a hash is provided and
+            mandatory properties are missing, then they will be retrieved
+            by an ldap query
+        @param domain_obj: the Domain object that the AD object is associated with
         """
         get_props = []
         self.properties = dict()
@@ -580,6 +552,10 @@ class ADObject(object):
         self._property_snapshot = copy.deepcopy(self.properties)
 
     def __repr__(self):
+        """
+        Print object DN
+        @return: string
+        """
         return 'ADObject: %s' % self.distinguished_name
 
     @property
@@ -627,11 +603,9 @@ class ADObject(object):
     def get_properties(self, properties):
         """Updates self.properties with the values from AD.
 
-        Args:
-          properties: a list of properties to retrieve
+        @param properties: a list of properties to retrieve
 
-        Raises:
-          errors.NonListParameter: if a string is passed instead of a list
+        @raise errors.NonListParameter: if a string is passed instead of a list
         """
         if properties.__class__.__name__ in ('str', 'unicode'):
             raise errors.NonListParameter
@@ -649,10 +623,10 @@ class ADObject(object):
         self.get_properties([x for x in self.properties])
 
     def move(self, destination):
-        """move an AD object from one part of the directory to another.
+        """
+        Move an AD object from one part of the directory to another.
 
-        Args:
-          destination: the destination DN
+        @param destination: the destination DN
         """
         prefix = None
 
@@ -671,13 +645,13 @@ class ADObject(object):
         self._property_snapshot = {}
 
     def set_properties(self):
-        """Write changed properties to Active Directory.
+        """
+        Write changed properties to Active Directory.
 
         Note: A property must be retrieved at least once before updating.
 
-        Returns:
-          True: on success
-          False: on failure
+        @return True: on success
+        @return False: on failure
         """
         old = {}
         new = {}
@@ -773,19 +747,17 @@ class User(ADObject):
         """
         In most cases this does not work as expected.
         http://www.selfadsi.org/ads-attributes/user-userAccountControl.htm#UF_PASSWD_CANT_CHANGE
-        :return: bool
         """
         return bitmask_bool(self.user_account_control, constants.ADS_UF_PASSWD_CANT_CHANGE)
 
     def unlock(self):
-        """unlock the user object in AD.
+        """
+        Unlock the user object in AD.
 
-        Returns:
-          True on success
-          False on failure
+        @return True: on success
+        @return False: on failure
 
-        Raises:
-          UserNotLockedOut: if the user is not locked out
+        @raise UserNotLockedOut: if the user is not locked out
         """
         if not self.locked_out:
             raise errors.UserNotLockedOut
@@ -800,14 +772,13 @@ class User(ADObject):
             return False
 
     def disable(self):
-        """disable the user object in AD.
+        """
+        Disable the user object in AD.
 
-        Returns:
-          True on success
-          False on failure
+        @return True: on success
+        @return False: on failure
 
-        Raises:
-          UserNotEnabled: if the user is already disabled
+        @raise UserNotEnabled: if the user is already disabled
         """
         if self.disabled:
             raise errors.UserNotEnabled
@@ -823,14 +794,13 @@ class User(ADObject):
             return False
 
     def enable(self):
-        """enable the user object in AD.
+        """
+        Enable the user object in AD.
 
-        Returns:
-          True on success
-          False on failure
+        @return True: on success
+        @return False: on failure
 
-        Raises:
-          UserNotDisabled: if the user is not disabled
+        @raise UserNotDisabled: if the user is not disabled
         """
         if not self.disabled:
             raise errors.UserNotDisabled
@@ -848,12 +818,6 @@ class User(ADObject):
     def groups(self):
         """
         Get groups that user is member of
-
-        Args:
-          self
-
-        Returns:
-          List of Group objects user is member of
         """
         ldap_filter = ('(&(objectCategory=group)(member=%s))'
                        % (escape(self.distinguished_name)))
@@ -863,13 +827,6 @@ class User(ADObject):
     def in_group(self, group):
         """
         Check if user is member of Group, and if so return True, else return False
-
-        Args:
-          self, Group object
-
-        Returns:
-          Bool
-
         """
         ldap_filter = ('(&(memberOf:1.2.840.113556.1.4.1941:=%s)(sAMAccountName=%s))'
                        % (escape(group.distinguished_name), escape(self.username)))
@@ -886,16 +843,16 @@ class User(ADObject):
         as expected. Here is explanation:
         http://www.selfadsi.org/ads-attributes/user-userAccountControl.htm#UF_PASSWD_CANT_CHANGE
 
-        Args:
-            self, New password, Old password (optional)
+        @param newpassword: Users new password, must comply with Domain password policy
+        @param oldpassword: Current/Old user password, not needed when doing administrative pwd change
 
-        Returns:
-            InvalidCredentials: When given invalid old user password. Note that giving invalid password few times might
+
+        @raise InvalidCredentials: When given invalid old user password. Note that giving invalid password few times might
             lock user account according to Domain Password Policy
-            DoesNotMeetPasswordPolicy: New password does not meed all Domain Password Policies, this includes password
+        @raise DoesNotMeetPasswordPolicy: New password does not meed all Domain Password Policies, this includes password
             age, which is by default one day
-            InsufficientAccess: User cannot change password
-            LDAPError: all other LDAP errors
+        @raise InsufficientAccess: User cannot change password
+        @raise LDAPError: all other LDAP errors
 
         """
         newpassword = unicode('\"' + newpassword + '\"').encode('utf-16-le')
@@ -909,7 +866,7 @@ class User(ADObject):
             pass_mod = [(ldap.MOD_REPLACE, 'unicodePwd', newpassword)]
 
         try:
-            self._domain_obj._ldap.modify_s(self.distinguished_name, pass_mod)
+            result = self._domain_obj._ldap.modify_s(self.distinguished_name, pass_mod)
         except ldap.CONSTRAINT_VIOLATION, e:
             # If the exceptions's 'info' field begins with:
             # 00000056 - Current passwords do not match
@@ -931,6 +888,8 @@ class User(ADObject):
         except ldap.LDAPError, e:
             raise errors.ADPasswordSetFailed('LDAP Error. desc: %s info: %s' % (e[0]['desc'], e[0]['info']))
 
+        if result[0] == 103:
+            return True
 
 class Computer(User):
     """An Active Directory computer object.
@@ -1061,13 +1020,13 @@ class Group(ADObject):
         return 'Group: %s' % constants.RE_CN.findall(self.distinguished_name)[0]
 
     def get_members(self):
-        """Retrieves a list of objects that are members.
+        """
+        Retrieves a list of objects that are members.
 
         get_members will try to find the appropriate object type for the member if
         if is a user, computer or group.
 
-        Returns:
-          A list of objects.
+        @return list: A list of objects.
         """
 
         members = []
@@ -1087,16 +1046,10 @@ class Group(ADObject):
     def add_member(self, member):
         """Add single instance of User, Computer or Group to group
 
-        Args:
-          member:  instance of User, Computer or Group
+        @param member:  instance of User, Computer or Group
 
-        Returns:
-          True on success
-          False on failure
-
-        Raises:
-          errors.MemberExists: if the member was already in the group
-          errors.InvalidObjectType: if wrong object type passed
+        @raise errors.MemberExists: if the member was already in the group
+        @raise errors.InvalidObjectType: if wrong object type passed
         """
         if not (isinstance(member, User) or isinstance(member, Computer) or isinstance(member, Group)):
             raise errors.InvalidObjectType
@@ -1108,18 +1061,13 @@ class Group(ADObject):
         return self.set_properties()
 
     def add_members(self, member_list):
-        """Add list of users to group
+        """
+        Add list of users to group
 
-        Args:
-          member_list:  a list of User objects or Group objects
+        @param member_list:  a list of User objects or Group objects
 
-        Returns:
-          True on success
-          False on failure
-
-        Raises:
-          errors.MemberExists: if the member was already in the group
-          errors.NonListParameter: if a string was passed by mistake
+        @raise errors.MemberExists: if the member was already in the group
+        @raise errors.NonListParameter: if a string was passed by mistake
         """
         if member_list.__class__.__name__ in ('str', 'unicode'):
             raise errors.NonListParameter
@@ -1139,8 +1087,7 @@ class Group(ADObject):
     def delete_member(self, member):
         """
         Delete single User, Computer or Group object from group
-        :param member User|Computer|Group object
-        :return: bool
+        @param member: User, Computer or Group object
         """
         if not (isinstance(member, User) or isinstance(member, Computer) or isinstance(member, Group)):
             raise errors.InvalidObjectType
@@ -1152,18 +1099,13 @@ class Group(ADObject):
         return self.set_properties()
 
     def delete_members(self, member_list):
-        """Remove multiple users from the group.
+        """
+        Remove multiple users from the group.
 
-        Args:
-          member_list:  a list of User objects or Group objects
+        @param member_list:  a list of User objects or Group objects
 
-        Returns:
-          True on success
-          False on failure
-
-        Raises:
-          errors.NonListParameter: if a string was passed by mistake
-          errors.NotAMember: if the object to be removed is not
+        @raise errors.NonListParameter: if a string was passed by mistake
+        @raise errors.NotAMember: if the object to be removed is not
                                                  a member
         """
         if member_list.__class__.__name__ in ('str', 'unicode'):
@@ -1187,17 +1129,12 @@ class Group(ADObject):
         return self.set_properties()
 
     def overwrite_members(self, member_list):
-        """Overwrite the member list with a list of users.
+        """
+        Overwrite the member list with a list of users.
 
-        Args:
-          member_list:  a list of User objects or Group objects
+        @param member_list:  a list of User objects or Group objects
 
-        Returns:
-          True on success
-          False on failure
-
-        Raises:
-          errors.NonListParameter: if a string was passed by mistake
+        @raise errors.NonListParameter: if a string was passed by mistake
         """
         if member_list.__class__.__name__ in ('str', 'unicode'):
             raise errors.NonListParameter

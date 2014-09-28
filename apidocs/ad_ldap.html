@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>ad_ldap : API documentation</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <link href="apidocs.css" type="text/css" rel="stylesheet" />
+    
+    
+  </head>
+  <body>
+    <h1 class="module">ad_ldap : module documentation</h1>
+    <p>
+      <span id="part"></span>
+      
+      
+    </p>
+    <div>
+      
+    </div>
+    <div class="docstring">
+      <pre>A module for using ldap to manipulate objects in AD.
+
+This module creates two basic object classes: Domain, and ADObject.
+
+The Domain class is used for every interaction with the Active Directory
+service itself, such as creating, modifying, or searching for objects.
+
+The ADObject class represents an object in the directory.  It could be a user,
+computer, OU, or any object.  It has an attribute called 'properties' that is a
+dict of the properties of the object.  To modify a property, you change it in
+the dict and call set_properties().  Every ADObject has a '_domain_obj' property
+that is a link to the Domain object, which will do the actual modifications to
+the directory.
+
+User, Computer, Group, and Container all inherit from ADObject, and add some
+attributes and methods for convenience.  For example, the User object has
+disable() and enable() methods for disabling and enabling user accounts, and a
+'disabled' property to make it easier to tell if an object has been disabled.
+
+
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</pre>
+    </div>
+
+    
+    <div id="splitTables">
+      <table class="children sortable" id="id1">
+  
+  
+  <tr class="function">
+    
+    
+    <td>Function</td>
+    <td><a href="ad_ldap.html#ad_time_to_unix">ad_time_to_unix</a></td>
+    <td><span>Converts AD double-wide int format to seconds since the epoch format. 
+Note: cribbed from filetimes.py at http://reliablybroken.com/b/2009/09/</span></td>
+  </tr><tr class="function">
+    
+    
+    <td>Function</td>
+    <td><a href="ad_ldap.html#text_time_to_unix">text_time_to_unix</a></td>
+    <td><span>Converts alternate time format text strings to seconds since the 
+epoch.</span></td>
+  </tr><tr class="function">
+    
+    
+    <td>Function</td>
+    <td><a href="ad_ldap.html#bitmask_bool">bitmask_bool</a></td>
+    <td><span>Returns True or False depending on whether a particular bit has been 
+set.</span></td>
+  </tr><tr class="function">
+    
+    
+    <td>Function</td>
+    <td><a href="ad_ldap.html#escape">escape</a></td>
+    <td><span>Escapes text to be used in an ldap filter.</span></td>
+  </tr><tr class="class">
+    
+    
+    <td>Class</td>
+    <td><a href="ad_ldap.Domain.html">Domain</a></td>
+    <td><span>Represents an Active Directory Domain.</span></td>
+  </tr><tr class="class">
+    
+    
+    <td>Class</td>
+    <td><a href="ad_ldap.ADObject.html">ADObject</a></td>
+    <td><span>A generic AD Object.</span></td>
+  </tr><tr class="class">
+    
+    
+    <td>Class</td>
+    <td><a href="ad_ldap.User.html">User</a></td>
+    <td><span>An Active Directory user object.</span></td>
+  </tr><tr class="class">
+    
+    
+    <td>Class</td>
+    <td><a href="ad_ldap.Computer.html">Computer</a></td>
+    <td><span>An Active Directory computer object.</span></td>
+  </tr><tr class="class">
+    
+    
+    <td>Class</td>
+    <td><a href="ad_ldap.Container.html">Container</a></td>
+    <td><span>An Active Directory CN or OU object.</span></td>
+  </tr><tr class="class">
+    
+    
+    <td>Class</td>
+    <td><a href="ad_ldap.Group.html">Group</a></td>
+    <td><span>An Active Directory Group object.</span></td>
+  </tr>
+</table>
+      
+    </div>
+    
+    
+
+    <div class="function">
+  <a name="ad_ldap.ad_time_to_unix">
+    
+  </a>
+  <a name="ad_time_to_unix">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    ad_time_to_unix(ad_time):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Converts AD double-wide int format to seconds since the epoch format. 
+Note: cribbed from filetimes.py at http://reliablybroken.com/b/2009/09/</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">ad_time</td><td>a 64-bit integer time format used by AD with the number of 100ns intervals 
+since January 1, 1601.</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">An int with the number of seconds since January 1, 1970.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.text_time_to_unix">
+    
+  </a>
+  <a name="text_time_to_unix">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    text_time_to_unix(text_time):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Converts alternate time format text strings to seconds since the 
+epoch.</p>
+<p>Some Active Directory properties are stored in a YYYYMMDDHHMMSS.0Z 
+format. See http://msdn.microsoft.com/en-us/library/aa772189(VS.85).aspx 
+for details.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">text_time</td><td>the string containing the time value.</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">The number of seconds since the epoch.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.bitmask_bool">
+    
+  </a>
+  <a name="bitmask_bool">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    bitmask_bool(bitmask, value):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Returns True or False depending on whether a particular bit has been 
+set.</p>
+<p>Microsoft uses bitmasks as a compact way of denoting a number of boolean
+settings.  The second bit, for example, might be the ADS_UF_ACCOUNTDISABLE 
+bit, so if the second bit is a 1, then the account is disabled, and if it 
+is a 0, then it is not.</p>
+<p>As an example, to create the 'disabled' property of a User object, we 
+use the userAccountControl property and ADS_UF_ACCOUNTDISABLE constant.</p>
+<p>bitmask_bool(user.user_account_control, constants.ADS_UF_ACCOUNTDISABLE)
+This will return True if the bit is set in user.user_account_control.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td colspan="2">bitmask: a number representing a bitmask</td></tr><tr><td></td><td class="fieldArg">value</td><td>the value to be checked (usually a known constant)</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">True if the bit has been set, False if it has not.</td></tr></table></div>
+  </div>
+</div><div class="function">
+  <a name="ad_ldap.escape">
+    
+  </a>
+  <a name="escape">
+    
+  </a>
+  <div class="functionHeader">
+    
+    def
+    escape(text):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Escapes text to be used in an ldap filter.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">text</td><td>The text to be escaped</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">The escaped text.</td></tr></table></div>
+  </div>
+</div>
+    <address>
+      <a href="index.html">API Documentation</a> for ad_ldap, generated by <a href="http://codespeak.net/~mwh/pydoctor/">pydoctor</a> at 2014-09-28 17:39:09.
+    </address>
+  </body>
+</html>
