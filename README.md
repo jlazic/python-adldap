@@ -319,5 +319,7 @@ ad.get_container_by_dn
 List of similar projects that you might find interesting
 
 https://github.com/dfwarden/ActiveDirectory-Python
+
 http://bazaar.launchpad.net/~csawyer-yumaed/adpasswd/trunk/view/head:/adpasswd.py
+
 https://github.com/geertj/python-ad
