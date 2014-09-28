@@ -144,8 +144,82 @@ Out[49]: ['Will work for money']
 Find group by name
 
 ```python
+In [5]: ham = ad.get_group_by_name('Ham')
+
+In [6]: ham
+Out[6]: Group: Ham
+
+In [7]: ham.distinguished_name
+Out[7]: 'CN=Ham,CN=Users,DC=lazic,DC=local'
 
 ```
+
+Similar to User object, Group object have its properties, but unlike user group can have members
+You can add members to group. Group can have another group, user, or computer as its member.
+
+```python
+In [8]: ham.get_members()
+Out[8]: [Computer: PC1, Group: Baz, User: Nataša Moskva, User: Lilika]
+
+```
+
+Add member to a group
+
+```python
+In [5]: group = ad.get_group_by_name('Spam')
+
+In [6]: user = ad.get_user_by_name('zika.pavlovic')
+
+In [7]: group.get_members()
+Out[7]: []
+
+In [8]: group.add_member(user)
+Out[8]: True
+
+In [9]: group.get_members()
+Out[9]: [User: Žika Pavlović]
+```
+
+You can add multiple members to group in one go
+
+```python
+In [14]: group = ad.get_group_by_name('eggs')
+
+In [16]: group.get_members()
+Out[16]: []
+
+In [17]: pc = ad.get_computer_by_name('pc1')
+
+In [18]: spam = ad.get_group_by_name('spam')
+
+In [19]: user = ad.get_user_by_name('misa.pavlovic')
+
+In [20]: group.add_members([pc, user, spam])
+Out[20]: True
+
+In [21]: group.get_members()
+Out[21]: [Computer: PC1, User: Miša Pavlović, Group: Spam]
+```
+
+If user already is member of a group MemberExists exception will be raised
+
+```python
+In [11]: user
+Out[11]: User: Žika Pavlović
+
+In [12]: group.get_members()
+Out[12]: [User: Žika Pavlović]
+
+In [13]: group.add_member(user)
+---------------------------------------------------------------------------
+   1103 
+   1104         if member.distinguished_name in self.properties['member']:
+-> 1105             raise errors.MemberExist
+   1106 
+   1107         self.properties['member'].append(member.distinguished_name)
+MemberExist: 
+```
+
 
 
 Similar to searching users you can search for Computer, Group, Container, or generic AD object using these functions

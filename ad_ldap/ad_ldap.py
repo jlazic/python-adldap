@@ -383,7 +383,7 @@ class Domain(object):
         if result:
             return result[0]
 
-        raise errors.ADObjectNotFound('User %s not found' % (user_name))
+        raise errors.ADObjectNotFound('User %s not found' % user_name)
 
     def get_computer_by_name(self, computer_name):
         """Get a Computer object from AD based on its hostname.
@@ -1029,7 +1029,7 @@ class Group(ADObject):
 
     def __init__(self, distinguished_name, properties, domain_obj):
         ADObject.__init__(self, distinguished_name, properties, domain_obj)
-        get_props = ['member']
+        get_props = []
 
         if isinstance(properties, dict):
             self.properties = properties
@@ -1084,20 +1084,27 @@ class Group(ADObject):
 
         return output
 
-    def add_member(self, user):
+    def add_member(self, member):
+        """Add single instance of User, Computer or Group to group
+
+        Args:
+          member:  instance of User, Computer or Group
+
+        Returns:
+          True on success
+          False on failure
+
+        Raises:
+          errors.MemberExists: if the member was already in the group
+          errors.InvalidObjectType: if wrong object type passed
         """
-        Add single User or Computer object to group
-        :param User object
-        :return:
-        """
-        if not isinstance(user, User):
+        if not (isinstance(member, User) or isinstance(member, Computer) or isinstance(member, Group)):
             raise errors.InvalidObjectType
 
-        member = user.distinguished_name
-        if member in self.properties['member']:
-            raise errors.ADGroupMemberExistsError
+        if member.distinguished_name in self.properties['member']:
+            raise errors.MemberExist
 
-        self.properties['member'].append(member)
+        self.properties['member'].append(member.distinguished_name)
         return self.set_properties()
 
     def add_members(self, member_list):
@@ -1111,7 +1118,7 @@ class Group(ADObject):
           False on failure
 
         Raises:
-          errors.MemberExistsError: if the member was already in the group
+          errors.MemberExists: if the member was already in the group
           errors.NonListParameter: if a string was passed by mistake
         """
         if member_list.__class__.__name__ in ('str', 'unicode'):
@@ -1127,6 +1134,21 @@ class Group(ADObject):
                 raise errors.MemberExist
 
         self.properties['member'] += members_to_add
+        return self.set_properties()
+
+    def delete_member(self, member):
+        """
+        Delete single User, Computer or Group object from group
+        :param member User|Computer|Group object
+        :return: bool
+        """
+        if not (isinstance(member, User) or isinstance(member, Computer) or isinstance(member, Group)):
+            raise errors.InvalidObjectType
+
+        if member.distinguished_name not in self.properties['member']:
+            raise errors.NotAMember
+
+        self.properties['member'].remove(member.distinguished_name)
         return self.set_properties()
 
     def delete_members(self, member_list):
@@ -1152,7 +1174,6 @@ class Group(ADObject):
         for member in member_list:
             if member.distinguished_name not in self.properties['member']:
                 raise errors.NotAMember
-
             members_to_remove.append(member.distinguished_name)
 
         members_to_remove = set(members_to_remove)
