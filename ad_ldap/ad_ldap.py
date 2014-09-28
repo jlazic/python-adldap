@@ -768,6 +768,15 @@ class User(ADObject):
         return bitmask_bool(self.user_account_control,
                             constants.ADS_UF_DONT_EXPIRE_PASSWD)
 
+    @property
+    def pwd_cant_change(self):
+        """
+        In most cases this does not work as expected.
+        http://www.selfadsi.org/ads-attributes/user-userAccountControl.htm#UF_PASSWD_CANT_CHANGE
+        :return: bool
+        """
+        return bitmask_bool(self.user_account_control, constants.ADS_UF_PASSWD_CANT_CHANGE)
+
     def unlock(self):
         """unlock the user object in AD.
 
@@ -873,6 +882,10 @@ class User(ADObject):
         When doing administrative password change (odlpassword=None) some password policies are not checked, like
         old remembered passwords.
 
+        It would be nice if AD would allow us to check if user can change his password, but this option does not work
+        as expected. Here is explanation:
+        http://www.selfadsi.org/ads-attributes/user-userAccountControl.htm#UF_PASSWD_CANT_CHANGE
+
         Args:
             self, New password, Old password (optional)
 
@@ -902,16 +915,16 @@ class User(ADObject):
             # 00000056 - Current passwords do not match
             # 0000052D - New password violates length/complexity/history
             # 00000005 - Insufficient access, maybe user have 'User cannot change password' option set
-            msg = e[0]['desc']
+            message = 'LDAP Error. desc: %s info: %s' % (e[0]['desc'], e[0]['info'])
             if e[0]['info'].startswith('00000056'):
                 # Incorrect current password.
-                raise errors.InvalidCredentials
+                raise errors.InvalidCredentials(message)
             elif e[0]['info'].startswith('0000052D'):
                 #Does not meet password policy
-                raise errors.DoesNotMeetPasswordPolicy
-            elif e[0]['info'].starswith('00000005'):
+                raise errors.DoesNotMeetPasswordPolicy(message)
+            elif e[0]['info'].startswith('00000005'):
                 #Either user have 'Cannot change password' option set, or changing user password without old password
-                raise errors.InsufficientAccess
+                raise errors.InsufficientAccess(message)
             else:
                 #When everything fails, return original error
                 raise e
