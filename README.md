@@ -10,9 +10,9 @@ Documentation can be found in apidocs directory. I have provided some examples, 
 ### Requirements
 python-ldap =< 2.4
 
-##Examples
+## Examples
 
-###Connecting
+### Connecting
 
 ```python
 from ad_ldap.ad_ldap import Domain
@@ -23,7 +23,7 @@ ad.connect('ldaps://192.168.1.166', 'administrator@lazic.local', 'Password01')
 LDAP host must have scheme (ldap or ldaps), depending are you connecting via SSL, or not. If your LDAP uses standard ports, you dont need to enter port.
 Username should have UPN suffix, I have found that connecting via python-ldap with username that have dot fails if username is provided without UPN suffix. ie. username 'josip.lazic' fails, while 'josip.lazic@domain.local' works.
 
-###Users
+### Users
 
 Assuming that you have conencted to LDAP you can find user by name/username
 
@@ -161,7 +161,7 @@ In [29]: user.disabled
 Out[29]: False
 ```
 
-###Password change
+### Password change
 
 There are 2 ways to change user password. Selfchange, and administrative change. In first case you must supply both old user password, and new password. During this user that you used for connecting to LDAP/AD does not need to have privilege to change other users password.
 
@@ -205,7 +205,7 @@ Out[17]: True
 
 When changing user password this way, all the same password policies apply, except password history policy.
 
-###Groups
+### Groups
 
 Find group by name
 
@@ -303,7 +303,7 @@ ad.get_container_by_dn
 ```
 
 
-##Similar projects
+## Similar projects
 List of similar projects that you might find interesting
 
 https://github.com/dfwarden/ActiveDirectory-Python
