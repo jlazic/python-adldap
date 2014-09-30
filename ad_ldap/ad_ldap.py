@@ -401,7 +401,7 @@ class Domain(object):
 
         @raise errors.ADObjectNotFound: When group does not exist
         """
-        result = self.search('sAMAccountName=%s'
+        result = self.search('cn=%s'
                              % escape(group_name), obj_class=Group)
 
         if result:
