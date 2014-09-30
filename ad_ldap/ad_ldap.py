@@ -357,6 +357,8 @@ class Domain(object):
         @param user_name: the Windows username (sAMAccountName) of the user
 
         @return User: A user object on success, nothing if no user found.
+
+        @raise errors.ADObjectNotFound: When user does not exist
         """
         result = self.search('sAMAccountName=%s'
                              % escape(user_name), obj_class=User)
@@ -373,6 +375,8 @@ class Domain(object):
         @param computer_name: the hostname of the computer.  can be fqdn, sAMAccountName, or computername
 
         @return Computer: A Computer object on success, nothing if no computer found.
+
+        @raise errors.ADObjectNotFound: When computer does not exist
         """
         account = constants.RE_HOSTNAME.match(computer_name).group()
 
@@ -385,6 +389,8 @@ class Domain(object):
         if result:
             return result[0]
 
+        raise errors.ADObjectNotFound('Computer %s not found' % computer_name)
+
     def get_group_by_name(self, group_name):
         """
         Get a Group object from AD based on its hostname.
@@ -392,12 +398,16 @@ class Domain(object):
         @param group_name: the name of the group.
 
         @return Group: A Group object on success, nothing if no computer found.
+
+        @raise errors.ADObjectNotFound: When group does not exist
         """
         result = self.search('sAMAccountName=%s'
                              % escape(group_name), obj_class=Group)
 
         if result:
             return result[0]
+
+        raise errors.ADObjectNotFound('Group %s not found' % group_name)
 
     def get_object_by_dn(self, distinguished_name):
         """
@@ -406,12 +416,16 @@ class Domain(object):
         @param distinguished_name:  A string with the distinguished name of the object
 
         @return ADObject: An ADObject object on success, nothing if no user found.
+
+        @raise errors.ADObjectNotFound: When object does not exist
         """
         ldap_filter = '(distinguishedName=%s)' % escape(distinguished_name)
         result = self.search(ldap_filter, obj_class=User)
 
         if result:
             return result[0]
+
+        raise errors.ADObjectNotFound('Object %s not found' % distinguished_name)
 
     def get_user_by_dn(self, distinguished_name):
         """
@@ -420,6 +434,8 @@ class Domain(object):
         @param distinguished_name:  A string with the distinguished name of the object
 
         @return User: A User object on success, nothing if no user found.
+
+        @raise errors.ADObjectNotFound: When user does not exist
         """
         ldap_filter = ('(&(distinguishedName=%s)(objectCategory=%s%s))'
                        % (escape(distinguished_name),
@@ -430,6 +446,8 @@ class Domain(object):
         if result:
             return result[0]
 
+        raise errors.ADObjectNotFound('User %s not found' % distinguished_name)
+
     def get_computer_by_dn(self, distinguished_name):
         """
         Gets a Computer object based on the distinguished name(DN).
@@ -437,6 +455,8 @@ class Domain(object):
         @param distinguished_name:  A string with the distinguished name of the object
 
         @return Computer: A Computer object on success, nothing if no computer found.
+
+        @raise errors.ADObjectNotFound: When computer does not exist
         """
         ldap_filter = ('(&(distinguishedName=%s)(objectCategory=%s%s))'
                        % (escape(distinguished_name),
@@ -447,6 +467,8 @@ class Domain(object):
         if result:
             return result[0]
 
+        raise errors.ADObjectNotFound('Computer %s not found' % distinguished_name)
+
     def get_group_by_dn(self, distinguished_name):
         """
         Gets a Group object based on the distinguished name(DN).
@@ -454,6 +476,8 @@ class Domain(object):
         @param distinguished_name:  A string with the distinguished name of the object
 
         @return User: A User object on success, nothing if no user found.
+
+        @raise errors.ADObjectNotFound: When group does not exist
         """
         ldap_filter = ('(&(distinguishedName=%s)(objectCategory=%s%s))'
                        % (escape(distinguished_name),
@@ -464,6 +488,8 @@ class Domain(object):
         if result:
             return result[0]
 
+        raise errors.ADObjectNotFound('Group %s not found' % distinguished_name)
+
     def get_container_by_dn(self, distinguished_name):
         """
         Gets a Group object based on the distinguished name(DN).
@@ -471,6 +497,8 @@ class Domain(object):
         @param distinguished_name:  A string with the distinguished name of the object
 
         @return Group: A Group object on success, nothing if no group found.
+
+        @raise errors.ADObjectNotFound: When container does not exist
         """
         ldap_filter = ''.join(['(&(distinguishedName=%s)'
                                % escape(distinguished_name),
@@ -484,6 +512,8 @@ class Domain(object):
 
         if result:
             return result[0]
+
+        raise errors.ADObjectNotFound('Container %s not found' % distinguished_name)
 
     def guess_object_type(self, obj):
         """
