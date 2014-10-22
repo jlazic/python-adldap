@@ -1076,6 +1076,10 @@ class Group(ADObject):
     def add_member(self, member):
         """Add single instance of User, Computer or Group to group
 
+        Using Domain.set_properties() when adding and removing members from group is trouble because set_properties
+        method first removes all members from group, and than adds modified memberlist. This causes too much noise
+        in logs and SIEM systems. Therefore using ldap.MOD_ADD, and ldap.MOD_DELETE makes more sense.
+
         @param member:  instance of User, Computer or Group
 
         @raise errors.MemberExists: if the member was already in the group
@@ -1087,36 +1091,20 @@ class Group(ADObject):
         if member.distinguished_name in self.properties['member']:
             raise errors.MemberExist
 
-        self.properties['member'].append(member.distinguished_name)
-        return self.set_properties()
+        mod_attrs = [(ldap.MOD_ADD, 'member', member.distinguished_name)]
+        result = self._domain_obj._ldap.modify_s(self.distinguished_name, mod_attrs)
+        self.refresh()
 
-    def add_members(self, member_list):
-        """
-        Add list of users to group
-
-        @param member_list:  a list of User objects or Group objects
-
-        @raise errors.MemberExists: if the member was already in the group
-        @raise errors.NonListParameter: if a string was passed by mistake
-        """
-        if member_list.__class__.__name__ in ('str', 'unicode'):
-            raise errors.NonListParameter
-
-        members_to_add = []
-
-        for user in member_list:
-            members_to_add.append(user.distinguished_name)
-
-        for member in members_to_add:
-            if member in self.properties['member']:
-                raise errors.MemberExist
-
-        self.properties['member'] += members_to_add
-        return self.set_properties()
+        if result[0] == 103:
+            return True
 
     def delete_member(self, member):
         """
         Delete single User, Computer or Group object from group
+        Using Domain.set_properties() when adding and removing members from group is trouble because set_properties
+        method first removes all members from group, and than adds modified memberlist. This causes too much noise
+        in logs and SIEM systems. Therefore using ldap.MOD_ADD, and ldap.MOD_DELETE makes more sense.
+
         @param member: User, Computer or Group object
         """
         if not (isinstance(member, User) or isinstance(member, Computer) or isinstance(member, Group)):
@@ -1125,38 +1113,12 @@ class Group(ADObject):
         if member.distinguished_name not in self.properties['member']:
             raise errors.NotAMember
 
-        self.properties['member'].remove(member.distinguished_name)
-        return self.set_properties()
+        mod_attrs = [(ldap.MOD_DELETE, 'member', member.distinguished_name)]
+        result = self._domain_obj._ldap.modify_s(self.distinguished_name, mod_attrs)
+        self.refresh()
 
-    def delete_members(self, member_list):
-        """
-        Remove multiple users from the group.
-
-        @param member_list:  a list of User objects or Group objects
-
-        @raise errors.NonListParameter: if a string was passed by mistake
-        @raise errors.NotAMember: if the object to be removed is not
-                                                 a member
-        """
-        if member_list.__class__.__name__ in ('str', 'unicode'):
-            raise errors.NonListParameter
-
-        members_to_remove = []
-
-        for member in member_list:
-            if member.distinguished_name not in self.properties['member']:
-                raise errors.NotAMember
-            members_to_remove.append(member.distinguished_name)
-
-        members_to_remove = set(members_to_remove)
-        current = set(self.properties['member'])
-        new_list = list(current - members_to_remove)
-
-        if not new_list:
-            new_list = []
-
-        self.properties['member'] = new_list
-        return self.set_properties()
+        if result[0] == 103:
+            return True
 
     def overwrite_members(self, member_list):
         """
