@@ -343,6 +343,66 @@ class Domain(object):
 
         self._ldap.delete_s(distinguished_name)
 
+
+    def change_password(self, distinguished_name, newpassword, oldpassword=None):
+        """
+        Change user password, must give valid old and valid new password that meets all Domain password policies.
+        When doing administrative password change (odlpassword=None) some password policies are not checked, like
+        old remembered passwords.
+
+        It would be nice if AD would allow us to check if user can change his password, but this option does not work
+        as expected. Here is explanation:
+        http://www.selfadsi.org/ads-attributes/user-userAccountControl.htm#UF_PASSWD_CANT_CHANGE
+
+        @param newpassword: Users new password, must comply with Domain password policy
+        @param oldpassword: Current/Old user password, not needed when doing administrative pwd change
+
+
+        @raise InvalidCredentials: When given invalid old user password. Note that giving invalid password few times might
+            lock user account according to Domain Password Policy
+        @raise DoesNotMeetPasswordPolicy: New password does not meed all Domain Password Policies, this includes password
+            age, which is by default one day
+        @raise InsufficientAccess: User cannot change password
+        @raise LDAPError: all other LDAP errors
+
+        """
+        newpassword = unicode('\"' + newpassword + '\"').encode('utf-16-le')
+        #If given old password encode it and try MOD_DELETE/MOD_ADD password, aka. regular user selfchange password
+        #else, try administrative password change, in which case authenticated user must have password change privilege
+        #by default that is Domain Administrator
+        if oldpassword is not None:
+            oldpassword = unicode('\"' + oldpassword + '\"').encode('utf-16-le')
+            pass_mod = [(ldap.MOD_DELETE, 'unicodePwd', [oldpassword]), (ldap.MOD_ADD, 'unicodePwd', [newpassword])]
+        else:
+            pass_mod = [(ldap.MOD_REPLACE, 'unicodePwd', newpassword)]
+
+        try:
+            result = self._ldap.modify_s(distinguished_name, pass_mod)
+        except ldap.CONSTRAINT_VIOLATION, e:
+            # If the exceptions's 'info' field begins with:
+            # 00000056 - Current passwords do not match
+            # 0000052D - New password violates length/complexity/history
+            # 00000005 - Insufficient access, maybe user have 'User cannot change password' option set
+            message = 'LDAP Error. desc: %s info: %s' % (e[0]['desc'], e[0]['info'])
+            if e[0]['info'].startswith('00000056'):
+                # Incorrect current password.
+                raise errors.InvalidCredentials(message)
+            elif e[0]['info'].startswith('0000052D'):
+                #Does not meet password policy
+                raise errors.DoesNotMeetPasswordPolicy(message)
+            elif e[0]['info'].startswith('00000005'):
+                #Either user have 'Cannot change password' option set, or changing user password without old password
+                raise errors.InsufficientAccess(message)
+            else:
+                #When everything fails, return original error
+                raise e
+        except ldap.LDAPError, e:
+            raise errors.ADPasswordSetFailed('LDAP Error. desc: %s info: %s' % (e[0]['desc'], e[0]['info']))
+
+        if result[0] == 103:
+            return True
+
+
     def get_object_by_name(self, name):
         """
         Get an ADObject from AD based on its sAMAccountName.
@@ -873,18 +933,17 @@ class User(ADObject):
         result = self._domain_obj.search(ldap_filter)
         return len(result) > 0
 
-    def change_password(self, newpassword, oldpassword=None):
+
+    def change_password(self, newpassword, oldpassword):
         """
         Change user password, must give valid old and valid new password that meets all Domain password policies.
-        When doing administrative password change (odlpassword=None) some password policies are not checked, like
-        old remembered passwords.
 
         It would be nice if AD would allow us to check if user can change his password, but this option does not work
         as expected. Here is explanation:
         http://www.selfadsi.org/ads-attributes/user-userAccountControl.htm#UF_PASSWD_CANT_CHANGE
 
         @param newpassword: Users new password, must comply with Domain password policy
-        @param oldpassword: Current/Old user password, not needed when doing administrative pwd change
+        @param oldpassword: Current/Old user password
 
 
         @raise InvalidCredentials: When given invalid old user password. Note that giving invalid password few times might
@@ -895,41 +954,8 @@ class User(ADObject):
         @raise LDAPError: all other LDAP errors
 
         """
-        newpassword = unicode('\"' + newpassword + '\"').encode('utf-16-le')
-        #If given old password encode it and try MOD_DELETE/MOD_ADD password, aka. regular user selfchange password
-        #else, try administrative password change, in which case authenticated user must have password change privilege
-        #by default that is Domain Administrator
-        if oldpassword is not None:
-            oldpassword = unicode('\"' + oldpassword + '\"').encode('utf-16-le')
-            pass_mod = [(ldap.MOD_DELETE, 'unicodePwd', [oldpassword]), (ldap.MOD_ADD, 'unicodePwd', [newpassword])]
-        else:
-            pass_mod = [(ldap.MOD_REPLACE, 'unicodePwd', newpassword)]
+        return self._domain_obj.change_password(self.distinguished_name, newpassword, oldpassword)
 
-        try:
-            result = self._domain_obj._ldap.modify_s(self.distinguished_name, pass_mod)
-        except ldap.CONSTRAINT_VIOLATION, e:
-            # If the exceptions's 'info' field begins with:
-            # 00000056 - Current passwords do not match
-            # 0000052D - New password violates length/complexity/history
-            # 00000005 - Insufficient access, maybe user have 'User cannot change password' option set
-            message = 'LDAP Error. desc: %s info: %s' % (e[0]['desc'], e[0]['info'])
-            if e[0]['info'].startswith('00000056'):
-                # Incorrect current password.
-                raise errors.InvalidCredentials(message)
-            elif e[0]['info'].startswith('0000052D'):
-                #Does not meet password policy
-                raise errors.DoesNotMeetPasswordPolicy(message)
-            elif e[0]['info'].startswith('00000005'):
-                #Either user have 'Cannot change password' option set, or changing user password without old password
-                raise errors.InsufficientAccess(message)
-            else:
-                #When everything fails, return original error
-                raise e
-        except ldap.LDAPError, e:
-            raise errors.ADPasswordSetFailed('LDAP Error. desc: %s info: %s' % (e[0]['desc'], e[0]['info']))
-
-        if result[0] == 103:
-            return True
 
 class Computer(User):
     """An Active Directory computer object.
