@@ -20,6 +20,8 @@ limitations under the License.
 class Error(Exception):
     """Generic Error class for adldap."""
 
+class AccountPasswordExpired(Error):
+    """An attempt was made to bind with account with expired password."""
 
 class InvalidObjectType(Error):
     """Given object is invalid type"""

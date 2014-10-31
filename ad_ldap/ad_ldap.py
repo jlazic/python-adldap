@@ -172,8 +172,15 @@ class Domain(object):
             self.get_root_dse_attrs()
         except ldap.SERVER_DOWN, e:
             raise errors.LDAPConnectionFailed(e.args[0]['info'])
-        except ldap.INVALID_CREDENTIALS:
-            raise errors.InvalidCredentials
+        except ldap.INVALID_CREDENTIALS, e:
+            """
+            AD returns INVALID_CREDENTIALS if we try to connect with correct, but expired, password.
+            We should detect that, and return different Exception in that case.
+            """
+            if 'data 773' in e.args[0]['info'] or 'data 532' in e.args[0]['info']:
+                raise errors.AccountPasswordExpired(e.args[0]['info'])
+            else:
+                raise errors.InvalidCredentials(e.args[0]['info'])
 
     def disconnect(self):
         """Disconnects from ldap."""
@@ -771,6 +778,9 @@ class User(ADObject):
     def pwd_never_expires(self):
         return bitmask_bool(self.user_account_control,
                             constants.ADS_UF_DONT_EXPIRE_PASSWD)
+    @property
+    def must_change_password(self):
+        return bool(int(self.properties['pwdLastSet'][0]) == 0)
 
     @property
     def pwd_cant_change(self):
@@ -865,7 +875,7 @@ class User(ADObject):
 
     def change_password(self, newpassword, oldpassword=None):
         """
-        Change user password, must give valid old and valid new password that meets all Domain password policy
+        Change user password, must give valid old and valid new password that meets all Domain password policies.
         When doing administrative password change (odlpassword=None) some password policies are not checked, like
         old remembered passwords.
 
